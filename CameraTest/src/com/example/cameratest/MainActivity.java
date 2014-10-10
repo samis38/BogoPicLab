@@ -14,10 +14,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
 	Uri imageFileUri;
+	Uri textFileUri;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,11 +42,12 @@ public class MainActivity extends Activity {
 	}
 
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+	private static final int CAPTURE_TEXT_ACTIVITY_REQUEST_CODE = 101;
 
 	public void takeAPhoto() {
 		// TODO: Create an intent with the action
 		// MediaStore.ACTION_IMAGE_CAPTURE
-		
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		// ComponentName cn = new ComponentName("es.softwareprocess.bogopicgen",
 		// "es.softwareprocess.bogopicgen.BogoPicGenActivity");
 		// ComponentName cn = new ComponentName("com.android.camera",
@@ -64,11 +67,16 @@ public class MainActivity extends Activity {
 				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
 		File imageFile = new File(imageFilePath);
 		imageFileUri = Uri.fromFile(imageFile);
-
+		/////////////////////////////////////////////////////////////////////
+		//textFileUri = Uri.fromFile(imageFile);
+		//intent.putExtra(MediaStore.EXTRA_OUTPUT, textFileUri);
+		//startActivityForResult(intent, CAPTURE_TEXT_ACTIVITY_REQUEST_CODE);
+		/////////////////////////////////////////////////////////////////////
 		// TODO: Put in the intent in the tag MediaStore.EXTRA_OUTPUT the URI
-		
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
 		// TODO: Start the activity (expecting a result), with the code
 		// CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE
+		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 		
 	}
 
@@ -82,6 +90,35 @@ public class MainActivity extends Activity {
 		//		button.setImageDrawable(Drawable.createFromPath(imageFileUri.getPath()));
 		// When the result is CANCELLED, set text "Photo canceled" in the status
 		// Otherwise, set text "Not sure what happened!" with the resultCode
+		if (requestCode == CAPTURE_TEXT_ACTIVITY_REQUEST_CODE){
+			if (resultCode == RESULT_OK){
+				Toast.makeText(this, "Couldn't Find File to Write to?",
+						Toast.LENGTH_LONG).show();
+			}
+			else if (resultCode == RESULT_CANCELED) {
+				Toast.makeText(this, "Couldn't Find File to Write to?",
+						Toast.LENGTH_LONG).show();
+			}
+			
+		}	
+		
+		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){
+			
+			TextView tv = (TextView) findViewById(R.id.status);
+			
+			if (resultCode == RESULT_OK){
+				tv.setText("Photo OK!");
+				
+				ImageButton button = (ImageButton) findViewById(R.id.TakeAPhoto);
+				button.setImageDrawable(Drawable.createFromPath(imageFileUri.getPath()));
+			}
+			else if (resultCode == RESULT_CANCELED) {
+				tv.setText("Photo Canceled!");
+			}
+			else {
+				tv.setText("Have no idea what happened!");
+			}
+		}
 		
 	}
 }

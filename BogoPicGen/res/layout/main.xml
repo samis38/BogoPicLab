@@ -7,11 +7,18 @@
 
     <!-- Preview: listitem=@android:layout/simple_list_item_1 -->
 
+    <Button
+        android:id="@+id/randomTextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.71"
+        android:text="Sent A Random Text" />
+
     <ImageButton
         android:id="@+id/TakeAPhoto"
         android:layout_width="fill_parent"
         android:layout_height="307dp"
-        android:layout_weight="0.75"
+        android:layout_weight="0.72"
         android:src="@drawable/ic_launcher" />
 
     <LinearLayout

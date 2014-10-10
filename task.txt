@@ -1,0 +1,2 @@
+sent random message back to the caller acivity
+display random message in status

@@ -61,6 +61,7 @@ public class BogoPicGenActivity extends Activity {
 		setBogoPic();
 
 		ImageButton button = (ImageButton) findViewById(R.id.TakeAPhoto);
+
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View v) {
 				setBogoPic();
@@ -69,7 +70,7 @@ public class BogoPicGenActivity extends Activity {
 		button.setOnClickListener(listener);
 
 		Button acceptButton = (Button) findViewById(R.id.Accept);
-
+		
 		acceptButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				processIntent(false);
@@ -83,23 +84,33 @@ public class BogoPicGenActivity extends Activity {
 				processIntent(true);
 			}
 		});
+		
+		Button randomButton = (Button) findViewById(R.id.randomTextButton);
+		
+		randomButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				//processIntent(true);
+			}
+		});
 
 	}
 
 	private Bitmap ourBMP;
+	private String ourString;
 
 	private void setBogoPic() {
 		// TODO: Show a toast with message "Generating Photo"
 		
 		
 		// TODO: Get a reference to the image button
-		
+		ImageButton button = (ImageButton) findViewById(R.id.TakeAPhoto);
 		
 		// Generate a bogopic
 		ourBMP = BogoPicGen.generateBitmap(400, 400);
-		
+		//ourString= RandomTextGen.nextSessionId();
+		//Toast.makeText(this, ourString, Toast.LENGTH_LONG).show();
 		// TODO: Assign the bogopic to the button with setImageBitmap
-		
+		button.setImageBitmap(ourBMP);
 	}
 
 	// Call this to accept
@@ -110,15 +121,25 @@ public class BogoPicGenActivity extends Activity {
 		}
 		
 		try {	
+			//ourString= RandomTextGen.nextSessionId();
+			//Toast.makeText(this, ourString, Toast.LENGTH_LONG).show();
+			
 			if (intent.getExtras() != null) {
 				// TODO: If cancelled, show a toast, set result to RESULT_CANCELED, finish and return 
-				
+				if (cancel){
+					Toast.makeText(this, "Canceling Photo", Toast.LENGTH_LONG).show();
+					setResult(RESULT_CANCELED);
+					finish();
+					return;
+				}
 				
 				// If accepted save the picture
 				File intentPicture = getPicturePath(intent);
 				saveBMP(intentPicture, ourBMP);
 				
 				// TODO: set result to RESULT_OK
+				setResult(RESULT_OK);
+				
 				
 			} else {
 				Toast.makeText(this, "Photo Cancelled: No Reciever?",
@@ -143,6 +164,14 @@ public class BogoPicGenActivity extends Activity {
 		ourBMP.compress(Bitmap.CompressFormat.JPEG, 75, out);
 		out.close();
 	}
+	
+	//private void saveRandomText(File intentPicture, String ourString) throws IOException,
+		//FileNotFoundException {
+	//OutputStream out1 = new FileOutputStream(intentPicture);
+	//ourString.compress(Bitmap.CompressFormat.JPEG, 75, out1);
+	
+	//out1.close();
+	//}
 	
 	private File getPicturePath(Intent intent) {
 		Uri uri = (Uri) intent.getExtras().get(MediaStore.EXTRA_OUTPUT);
